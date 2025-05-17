@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { fetchItem, searchRecipesByOutput, fetchRecipe, fetchItems, fetchItemPrice, fetchItemPrices, formatPrice, formatPriceWithIcons } from '@/services/gw2api';
+import { fetchItem, searchRecipesByOutput, fetchRecipe, fetchItems, fetchItemPrice, fetchItemPrices, formatPriceWithIcons } from '@/services/gw2api';
 import { addToFavorites, removeFromFavorites, isFavorite } from '@/services/favoriteService';
 import { Item, Recipe, ItemPrice } from '@/types/gw2api';
 import Image from 'next/image';

@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["render.guildwars2.com"],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;

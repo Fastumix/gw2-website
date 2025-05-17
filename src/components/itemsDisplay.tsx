@@ -1,18 +1,15 @@
 // src/components/itemsDisplay.tsx
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Item, Recipe, ItemRarity, ItemPrice } from '@/types/gw2api';
 import { 
-  fetchPopularItems, 
-  fetchItem, 
   searchRecipesByOutput, 
   fetchRecipe, 
   fetchItems, 
   fetchItemsByCategory,
   fetchItemPrice,
   fetchItemPrices,
-  formatPrice,
   formatPriceWithIcons,
   FilterParams
 } from '@/services/gw2api';
