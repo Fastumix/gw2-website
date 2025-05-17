@@ -33,6 +33,7 @@ export default function Header() {
         <nav className={`nav ${mobileMenuOpen ? 'mobile-menu-open' : ''}`}>
           <ul className="nav-list">
             <li><Link href="/" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Home</Link></li>
+            <li><Link href="/crafting" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Crafting</Link></li>
             <li><Link href="https://wiki.guildwars2.com/" target="_blank" className="nav-link" onClick={() => setMobileMenuOpen(false)}>GW2 Wiki</Link></li>
           </ul>
         </nav>

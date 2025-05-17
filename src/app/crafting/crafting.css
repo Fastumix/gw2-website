@@ -1,0 +1,623 @@
+/* Головний контейнер */
+.crafting-container {
+  max-width: 1200px;
+  margin: 6rem auto 10rem;
+  padding: 1rem 2rem;
+  background-color: #0a0a0a;
+  min-height: calc(100vh - 4rem);
+}
+
+/* Заголовок сторінки */
+.crafting-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.back-button {
+  padding: 0.5rem 1rem;
+  background-color: #ff7700;
+  color: #000;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.back-button:hover {
+  background-color: #ff9900;
+}
+
+.crafting-title {
+  font-size: 2rem;
+  margin: 0;
+  flex-grow: 1;
+  color: #ff7700;
+  text-shadow: 0 0 10px rgba(255, 119, 0, 0.3);
+}
+
+/* Завантаження */
+.crafting-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.crafting-spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #ff7700;
+  width: 40px;
+  height: 40px;
+  animation: spin 1.5s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Помилка */
+.crafting-error {
+  text-align: center;
+  padding: 2rem;
+  background-color: #111111;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid #ff3333;
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #ff7700;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* Фільтри */
+.crafting-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #111111;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+}
+
+.filter-group label {
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  color: #d0d0d0;
+}
+
+.filter-select,
+.filter-input {
+  padding: 0.5rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  background-color: #222222;
+  color: #fff;
+}
+
+.filter-select:focus,
+.filter-input:focus {
+  outline: none;
+  border-color: #ff7700;
+  box-shadow: 0 0 0 2px rgba(255, 119, 0, 0.3);
+}
+
+.search-group {
+  flex-grow: 1;
+}
+
+.search-input {
+  padding: 0.5rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  flex-grow: 1;
+  min-width: 100%;
+  background-color: #222222;
+  color: #fff;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #ff7700;
+  box-shadow: 0 0 0 2px rgba(255, 119, 0, 0.3);
+}
+
+/* Сортування */
+.crafting-sort {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background-color: #111111;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sort-select {
+  padding: 0.4rem;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background-color: #222222;
+  color: #fff;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #ff7700;
+}
+
+.sort-order-button {
+  background-color: #222222;
+  border: 1px solid #333;
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  color: #d0d0d0;
+}
+
+.sort-order-button:hover {
+  background-color: #333333;
+  border-color: #ff7700;
+  color: #ff7700;
+}
+
+.results-count {
+  font-size: 0.9rem;
+  color: #d0d0d0;
+}
+
+/* Сітка предметів */
+.crafting-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.crafting-item {
+  background-color: #111111;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-width: 2px;
+  border-style: solid;
+}
+
+.crafting-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 15px rgba(255, 119, 0, 0.4);
+}
+
+.crafting-item-content {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+.crafting-item-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  gap: 0.75rem;
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.crafting-item-image {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 4px;
+}
+
+.crafting-item-name {
+  font-weight: 500;
+  font-size: 1.05rem;
+  flex-grow: 1;
+}
+
+.crafting-item-details {
+  padding: 1rem;
+}
+
+.crafting-item-info {
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #d0d0d0;
+}
+
+.info-label {
+  font-weight: 500;
+  color: #ff9900;
+  margin-right: 0.25rem;
+}
+
+.profit {
+  color: #3cb371;
+  font-weight: 500;
+}
+
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  background-color: #111111;
+  border-radius: 8px;
+  color: #d0d0d0;
+  border-left: 4px solid #ff7700;
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+/* Load More Button */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.load-more-button {
+  padding: 0.8rem 2rem;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.load-more-button:hover {
+  background-color: #ff7700;
+}
+
+.load-more-button:disabled {
+  background-color: #444;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* Пагінація */
+.crafting-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.pagination-button {
+  padding: 0.5rem 1rem;
+  background-color: #222222;
+  border: 1px solid #333;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #d0d0d0;
+  transition: all 0.2s;
+}
+
+.pagination-button:hover:not(:disabled) {
+  background-color: #333333;
+  border-color: #ff7700;
+  color: #ff7700;
+}
+
+.pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Page numbers styling */
+.pagination-numbers {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.page-number {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #222;
+  border: 1px solid #333;
+  border-radius: 4px;
+  color: #d0d0d0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.page-number:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.page-number.active {
+  background-color: #ff7700;
+  color: #000;
+  border-color: #ff7700;
+}
+
+.page-ellipsis {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.pagination-info {
+  font-size: 0.9rem;
+  color: #d0d0d0;
+}
+
+/* Кольори для рідкості предметів */
+.rarity-junk {
+  border-color: #aaa;
+}
+
+.rarity-basic {
+  border-color: #444444;
+}
+
+.rarity-fine {
+  border-color: #62a4da;
+}
+
+.rarity-masterwork {
+  border-color: #1a9306;
+}
+
+.rarity-rare {
+  border-color: #fcd00b;
+}
+
+.rarity-exotic {
+  border-color: #ffa405;
+}
+
+.rarity-ascended {
+  border-color: #fb3e8d;
+}
+
+.rarity-legendary {
+  border-color: #4c139d;
+  box-shadow: 0 0 10px rgba(76, 19, 157, 0.7);
+}
+
+.text-junk {
+  color: #aaaaaa;
+}
+
+.text-basic {
+  color: #ffffff;
+}
+
+.text-fine {
+  color: #6699ff;
+}
+
+.text-masterwork {
+  color: #66ff66;
+}
+
+.text-rare {
+  color: #ffff44;
+}
+
+.text-exotic {
+  color: #ff7700;
+}
+
+.text-ascended {
+  color: #ff44aa;
+}
+
+.text-legendary {
+  color: #9966ff;
+}
+
+/* Адаптивна верстка */
+@media (max-width: 768px) {
+  .crafting-filters {
+    flex-direction: column;
+  }
+  
+  .filter-group {
+    min-width: 100%;
+  }
+  
+  .crafting-items-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+  
+  .crafting-title {
+    font-size: 1.5rem;
+  }
+  
+  .crafting-sort {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .sort-controls {
+    width: 100%;
+  }
+  
+  .results-count {
+    margin-top: 0.5rem;
+  }
+  
+  .pagination-numbers {
+    gap: 0.1rem;
+  }
+  
+  .page-number {
+    width: 32px;
+    height: 32px;
+    font-size: 0.8rem;
+  }
+  
+  .page-ellipsis {
+    width: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .crafting-items-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .pagination-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .pagination-info {
+    font-size: 0.8rem;
+  }
+  
+  .crafting-pagination {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .pagination-numbers {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+  
+  .page-number {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Loading Progress */
+.loading-progress {
+  width: 100%;
+  max-width: 500px;
+  margin-top: 20px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #222;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #ff7700;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 14px;
+  color: #ccc;
+  text-align: center;
+}
+
+/* Loading more indicator */
+.loading-more {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.small-spinner {
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 3px solid #ff7700;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+.loading-indicator {
+  color: #ff7700;
+  font-style: italic;
+  font-size: 0.8em;
+  margin-left: 8px;
+}
+
+/* Save status indicator */
+.save-status-indicator {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  z-index: 110;
+  animation: fadeIn 0.3s;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  border-left: 3px solid #ff7700;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

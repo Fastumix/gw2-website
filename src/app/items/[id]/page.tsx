@@ -6,7 +6,7 @@ import { addToFavorites, removeFromFavorites, isFavorite } from '@/services/favo
 import { Item, Recipe, ItemPrice } from '@/types/gw2api';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import './item-details.css';
 
 interface RecipeData {
@@ -29,6 +29,7 @@ function ItemDetailContent({ itemId }: { itemId: string }) {
   const [ingredientDetails, setIngredientDetails] = useState<Record<number, { source: string, price: ItemPrice | null }>>({});
   const searchParams = useSearchParams();
   const compareItemId = searchParams.get('compare');
+  const router = useRouter();
 
   useEffect(() => {
     async function loadItemData() {
@@ -337,7 +338,7 @@ function ItemDetailContent({ itemId }: { itemId: string }) {
       <div className="detail-error">
         <h2>Error</h2>
         <p>{error || 'Item not found'}</p>
-        <Link href="/" className="back-link">Return to Home</Link>
+        <button onClick={() => router.back()} className="back-link">Return to Previous Page</button>
       </div>
     );
   }
@@ -350,7 +351,7 @@ function ItemDetailContent({ itemId }: { itemId: string }) {
   return (
     <div className="item-detail-container">
       <div className="item-detail-header">
-        <Link href="/" className="back-button">← Back</Link>
+        <button onClick={() => router.back()} className="back-button">← Back</button>
         <h1 className={`item-detail-title ${textClass}`}>{item.name}</h1>
         
         {/* If accessed with compare parameter, show comparison button */}

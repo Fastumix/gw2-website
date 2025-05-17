@@ -13,14 +13,16 @@
 }
 
 .back-button {
-  padding: 8px 16px;
+  padding: 0.5rem 1rem;
   background-color: #ff7700;
   color: #000;
   border-radius: 4px;
-  font-weight: 600;
-  margin-right: 20px;
   text-decoration: none;
+  font-weight: 500;
   transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
 }
 
 .back-button:hover {
@@ -340,18 +342,18 @@
 
 .back-link {
   display: inline-block;
-  padding: 8px 16px;
-  margin-top: 20px;
-  background-color: #ff7700;
-  color: #000;
-  border-radius: 4px;
+  margin-top: 1rem;
+  color: #ff7700;
   text-decoration: none;
-  font-weight: 600;
-  transition: background-color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
 }
 
 .back-link:hover {
-  background-color: #ff9900;
+  text-decoration: underline;
 }
 
 @keyframes spin {

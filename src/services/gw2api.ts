@@ -1,4 +1,17 @@
 import { Item, Recipe, ItemRarity, ItemPrice } from "@/types/gw2api";
+import { 
+  cacheItems, 
+  cacheRecipes, 
+  cachePrices, 
+  getCachedItem, 
+  getCachedItems, 
+  getCachedRecipe, 
+  getCachedRecipes, 
+  getCachedPrice, 
+  getCachedPrices,
+  getAllCachedRecipeIds,
+  shouldUpdateCache
+} from "./cachingService";
 
 const API_BASE_URL = "https://api.guildwars2.com/v2";
 
@@ -184,6 +197,39 @@ async function fetchFromAPI<T>(endpoint: string, params: Record<string, any> = {
     const response = await fetch(urlWithParams);
     
     if (!response.ok) {
+      // For recipe endpoints, return an empty result instead of failing completely
+      if (endpoint.includes('/recipes') && response.status === 404) {
+        console.warn(`Recipe not found: ${urlWithParams}`);
+        // Return empty array for recipe requests
+        if (Array.isArray(params.ids) || endpoint === '/recipes') {
+          return [] as unknown as T;
+        } else {
+          // Return a minimal recipe object
+          return {} as T;
+        }
+      }
+      
+      // For commerce/prices endpoints, return empty prices instead of failing
+      if (endpoint.includes('/commerce/prices') && response.status === 404) {
+        console.warn(`Price not found: ${urlWithParams}`);
+        // Return empty array for price requests
+        if (Array.isArray(params.ids) || endpoint === '/commerce/prices') {
+          return [] as unknown as T;
+        } else {
+          // For a specific price, extract ID from the endpoint and return a placeholder
+          const idMatch = endpoint.match(/\/commerce\/prices\/(\d+)$/);
+          const id = idMatch ? parseInt(idMatch[1]) : 0;
+          
+          // Return a minimal price object
+          return {
+            id,
+            whitelisted: false,
+            buys: { quantity: 0, unit_price: 0 },
+            sells: { quantity: 0, unit_price: 0 }
+          } as unknown as T;
+        }
+      }
+      
       throw new Error(`API request failed: ${response.status} ${response.statusText}`);
     }
     
@@ -193,6 +239,35 @@ async function fetchFromAPI<T>(endpoint: string, params: Record<string, any> = {
     return data as T;
   } catch (error) {
     console.error('Error fetching from API:', error);
+    
+    // Handle specific errors for recipe API
+    if (endpoint.includes('/recipes')) {
+      // Return empty array for recipe requests
+      if (Array.isArray(params.ids) || endpoint === '/recipes') {
+        return [] as unknown as T;
+      }
+    }
+    
+    // Handle specific errors for prices API
+    if (endpoint.includes('/commerce/prices')) {
+      // Return empty array for price requests
+      if (Array.isArray(params.ids) || endpoint === '/commerce/prices') {
+        return [] as unknown as T;
+      }
+      
+      // For a specific price, extract ID from the endpoint and return a placeholder
+      const idMatch = endpoint.match(/\/commerce\/prices\/(\d+)$/);
+      const id = idMatch ? parseInt(idMatch[1]) : 0;
+      
+      // Return a minimal price object
+      return {
+        id,
+        whitelisted: false,
+        buys: { quantity: 0, unit_price: 0 },
+        sells: { quantity: 0, unit_price: 0 }
+      } as unknown as T;
+    }
+    
     throw error;
   }
 }
@@ -224,33 +299,90 @@ export async function fetchItemsPage(page: number = 0, pageSize: number = 50): P
 }
 
 /**
- * Get specific items by their IDs
+ * Get specific items by their IDs with caching
  */
 export async function fetchItems(ids: number[]): Promise<Item[]> {
   if (!ids || ids.length === 0) return [];
   
+  // Try to get items from cache first
+  const cachedItems = await getCachedItems(ids);
+  const cachedItemsMap = new Map<number, Item>(cachedItems.map(item => [item.id, item]));
+  
+  // Find missing items that need to be fetched
+  const missingIds = ids.filter(id => !cachedItemsMap.has(id));
+  
+  // If all items are already in cache, return them
+  if (missingIds.length === 0) {
+    return ids.map(id => cachedItemsMap.get(id)!).filter(Boolean);
+  }
+  
   // API has a limit on the number of IDs in one request
   const maxIdsPerRequest = 200;
   
-  if (ids.length <= maxIdsPerRequest) {
-    return fetchFromAPI<Item[]>('/items', { ids });
+  // Fetch missing items
+  let newItems: Item[] = [];
+  
+  if (missingIds.length <= maxIdsPerRequest) {
+    try {
+      const items = await fetchFromAPI<Item[]>('/items', { ids: missingIds });
+      newItems = items;
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    }
   } else {
     // Split into smaller groups if too many IDs
-    const results: Item[] = [];
-    for (let i = 0; i < ids.length; i += maxIdsPerRequest) {
-      const chunk = ids.slice(i, i + maxIdsPerRequest);
-      const items = await fetchFromAPI<Item[]>('/items', { ids: chunk });
-      results.push(...items);
+    for (let i = 0; i < missingIds.length; i += maxIdsPerRequest) {
+      const chunk = missingIds.slice(i, i + maxIdsPerRequest);
+      try {
+        const items = await fetchFromAPI<Item[]>('/items', { ids: chunk });
+        newItems.push(...items);
+      } catch (error) {
+        console.error(`Error fetching items chunk ${i}-${i+maxIdsPerRequest}:`, error);
+      }
     }
-    return results;
   }
+  
+  // Cache the newly fetched items
+  if (newItems.length > 0) {
+    try {
+      await cacheItems(newItems);
+    } catch (error) {
+      console.error('Error caching items:', error);
+    }
+  }
+  
+  // Combine cached and newly fetched items
+  const allItemsMap = new Map<number, Item>([
+    ...Array.from(cachedItemsMap.entries()),
+    ...newItems.map(item => [item.id, item] as [number, Item])
+  ]);
+  
+  // Return items in the same order as requested
+  return ids.map(id => allItemsMap.get(id)).filter(Boolean) as Item[];
 }
 
 /**
- * Get one item by its ID
+ * Get one item by its ID with caching
  */
 export async function fetchItem(id: number): Promise<Item> {
-  return fetchFromAPI<Item>(`/items/${id}`);
+  // Try to get item from cache first
+  const cachedItem = await getCachedItem(id);
+  if (cachedItem) {
+    return cachedItem;
+  }
+  
+  // If not in cache, fetch from API
+  try {
+    const item = await fetchFromAPI<Item>(`/items/${id}`);
+    
+    // Cache the newly fetched item
+    await cacheItems([item]);
+    
+    return item;
+  } catch (error) {
+    console.error(`Error fetching item ${id}:`, error);
+    throw error;
+  }
 }
 
 /**
@@ -561,10 +693,27 @@ export async function searchRecipesByOutput(outputItemId: number): Promise<numbe
 }
 
 /**
- * Get recipe by its ID
+ * Get recipe by its ID with caching
  */
 export async function fetchRecipe(id: number): Promise<Recipe> {
-  return fetchFromAPI<Recipe>(`/recipes/${id}`);
+  // Try to get recipe from cache first
+  const cachedRecipe = await getCachedRecipe(id);
+  if (cachedRecipe) {
+    return cachedRecipe;
+  }
+  
+  // If not in cache, fetch from API
+  try {
+    const recipe = await fetchFromAPI<Recipe>(`/recipes/${id}`);
+    
+    // Cache the newly fetched recipe
+    await cacheRecipes([recipe]);
+    
+    return recipe;
+  } catch (error) {
+    console.error(`Error fetching recipe ${id}:`, error);
+    throw error;
+  }
 }
 
 /**
@@ -792,20 +941,59 @@ async function optimizedFetchItems(ids: number[], context: string = "general"): 
   }
 }
 
-// Fetch recipes by IDs
+/**
+ * Fetch recipes by IDs with caching
+ */
 export async function fetchRecipes(ids: number[]): Promise<Recipe[]> {
   if (ids.length === 0) {
     return [];
   }
   
-  const idsParam = ids.join(',');
-  const response = await fetch(`${API_BASE_URL}/recipes?ids=${idsParam}`);
+  // Try to get recipes from cache first
+  const cachedRecipes = await getCachedRecipes(ids);
+  const cachedRecipesMap = new Map<number, Recipe>(cachedRecipes.map(recipe => [recipe.id, recipe]));
   
-  if (!response.ok) {
-    throw new Error('Error fetching recipes');
+  // Find missing recipes that need to be fetched
+  const missingIds = ids.filter(id => !cachedRecipesMap.has(id));
+  
+  // If all recipes are already in cache, return them
+  if (missingIds.length === 0) {
+    return ids.map(id => cachedRecipesMap.get(id)!).filter(Boolean);
   }
   
-  return response.json();
+  // Fetch missing recipes
+  let newRecipes: Recipe[] = [];
+  
+  try {
+    const idsParam = missingIds.join(',');
+    const response = await fetch(`${API_BASE_URL}/recipes?ids=${idsParam}`);
+    
+    if (!response.ok) {
+      console.warn(`Error fetching recipes: ${response.status} ${response.statusText}`);
+    } else {
+      newRecipes = await response.json();
+      
+      // Cache the newly fetched recipes
+      if (newRecipes.length > 0) {
+        try {
+          await cacheRecipes(newRecipes);
+        } catch (error) {
+          console.error('Error caching recipes:', error);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch recipes:', error);
+  }
+  
+  // Combine cached and newly fetched recipes
+  const allRecipesMap = new Map<number, Recipe>([
+    ...Array.from(cachedRecipesMap.entries()),
+    ...newRecipes.map(recipe => [recipe.id, recipe] as [number, Recipe])
+  ]);
+  
+  // Return recipes in the same order as requested
+  return ids.map(id => allRecipesMap.get(id)).filter(Boolean) as Recipe[];
 }
 
 // Get popular crafting materials
@@ -968,14 +1156,35 @@ export const popularItemIds = [
 ];
 
 /**
- * Отримати ціни торгового поста для предмета за його ID
+ * Отримати ціни торгового поста для предмета за його ID з кешуванням
  */
 export async function fetchItemPrice(id: number): Promise<ItemPrice> {
+  // Try to get price from cache first
+  const cachedPrice = await getCachedPrice(id);
+  
+  // If price is in cache and not too old (less than 1 hour), return it
+  const shouldUpdate = await shouldUpdateCache('prices', 1); // 1 hour max age for prices
+  if (cachedPrice && !shouldUpdate) {
+    return cachedPrice;
+  }
+  
+  // If not in cache or too old, fetch from API
   try {
-    return fetchFromAPI<ItemPrice>('/commerce/prices/' + id);
+    const price = await fetchFromAPI<ItemPrice>('/commerce/prices/' + id);
+    
+    // Cache the newly fetched price
+    await cachePrices([price]);
+    
+    return price;
   } catch (error) {
     handleApiError(error, "fetchItemPrice");
-    // Повертаємо пусті значення для цін, якщо виникла помилка
+    
+    // If we have a cached price even if old, return it as fallback
+    if (cachedPrice) {
+      return cachedPrice;
+    }
+    
+    // Otherwise return empty values for price
     return {
       id,
       whitelisted: false,
@@ -986,49 +1195,89 @@ export async function fetchItemPrice(id: number): Promise<ItemPrice> {
 }
 
 /**
- * Отримати ціни торгового поста для кількох предметів за їх ID
+ * Отримати ціни торгового поста для кількох предметів за їх ID з кешуванням
  */
 export async function fetchItemPrices(ids: number[]): Promise<ItemPrice[]> {
   if (!ids || ids.length === 0) return [];
   
-  // API має обмеження на кількість ID в одному запиті
+  // Try to get prices from cache first
+  const cachedPrices = await getCachedPrices(ids);
+  const cachedPricesMap = new Map<number, ItemPrice>(cachedPrices.map(price => [price.id, price]));
+  
+  // Check if prices need to be updated (older than 1 hour)
+  const shouldUpdate = await shouldUpdateCache('prices', 1); // 1 hour max age for prices
+  
+  // If all prices are in cache and not too old, return them
+  if (cachedPrices.length === ids.length && !shouldUpdate) {
+    return ids.map(id => cachedPricesMap.get(id)!);
+  }
+  
+  // Find missing prices that need to be fetched
+  const missingIds = ids.filter(id => !cachedPricesMap.has(id));
+  const idsToFetch = shouldUpdate ? ids : missingIds;
+  
+  if (idsToFetch.length === 0) {
+    return cachedPrices;
+  }
+  
+  // API has a limit on the number of IDs in one request
   const maxIdsPerRequest = 200;
   
-  if (ids.length <= maxIdsPerRequest) {
+  // Fetch prices
+  let newPrices: ItemPrice[] = [];
+  
+  if (idsToFetch.length <= maxIdsPerRequest) {
     try {
-      return fetchFromAPI<ItemPrice[]>('/commerce/prices', { ids });
+      newPrices = await fetchFromAPI<ItemPrice[]>('/commerce/prices', { ids: idsToFetch });
     } catch (error) {
       handleApiError(error, "fetchItemPrices");
-      // Повертаємо пусті значення для цін, якщо виникла помилка
-      return ids.map(id => ({
+    }
+  } else {
+    // Split into smaller groups if too many IDs
+    for (let i = 0; i < idsToFetch.length; i += maxIdsPerRequest) {
+      const chunk = idsToFetch.slice(i, i + maxIdsPerRequest);
+      try {
+        const prices = await fetchFromAPI<ItemPrice[]>('/commerce/prices', { ids: chunk });
+        newPrices.push(...prices);
+      } catch (error) {
+        handleApiError(error, `fetchItemPrices chunk ${i}`);
+      }
+    }
+  }
+  
+  // Cache the newly fetched prices
+  if (newPrices.length > 0) {
+    try {
+      await cachePrices(newPrices);
+    } catch (error) {
+      console.error('Error caching prices:', error);
+    }
+  }
+  
+  // Combine cached and newly fetched prices
+  const allPricesMap = new Map<number, ItemPrice>([
+    ...Array.from(cachedPricesMap.entries()),
+    ...newPrices.map(price => [price.id, price] as [number, ItemPrice])
+  ]);
+  
+  // Create empty prices for missing items
+  const result: ItemPrice[] = [];
+  for (const id of ids) {
+    const price = allPricesMap.get(id);
+    if (price) {
+      result.push(price);
+    } else {
+      // Create a properly typed empty price
+      result.push({
         id,
         whitelisted: false,
         buys: { quantity: 0, unit_price: 0 },
         sells: { quantity: 0, unit_price: 0 }
-      }));
+      });
     }
-  } else {
-    // Розділяємо на менші групи, якщо забагато ID
-    const results: ItemPrice[] = [];
-    for (let i = 0; i < ids.length; i += maxIdsPerRequest) {
-      const chunk = ids.slice(i, i + maxIdsPerRequest);
-      try {
-        const prices = await fetchFromAPI<ItemPrice[]>('/commerce/prices', { ids: chunk });
-        results.push(...prices);
-      } catch (error) {
-        handleApiError(error, `fetchItemPrices chunk ${i}`);
-        // Додаємо пусті значення для цін, якщо виникла помилка
-        const emptyPrices = chunk.map(id => ({
-          id,
-          whitelisted: false,
-          buys: { quantity: 0, unit_price: 0 },
-          sells: { quantity: 0, unit_price: 0 }
-        }));
-        results.push(...emptyPrices);
-      }
-    }
-    return results;
   }
+  
+  return result;
 }
 
 /**
@@ -1061,4 +1310,47 @@ export function formatPriceWithIcons(price: number): string {
   result += `${copper} <img src="/images/currency/copper.svg" alt="c" class="currency-icon" />`;
   
   return result;
+}
+
+/**
+ * Get all recipe IDs using cache if available
+ */
+export async function getAllRecipeIds(): Promise<number[]> {
+  // Try to get recipe IDs from cache first
+  const shouldUpdate = await shouldUpdateCache('recipes', 24); // Update every 24 hours
+  const cachedIds = await getAllCachedRecipeIds();
+  
+  // If we have cached recipe IDs and they're not too old, return them
+  if (cachedIds.length > 0 && !shouldUpdate) {
+    return cachedIds;
+  }
+  
+  // Otherwise fetch from API
+  try {
+    const response = await fetch(`${API_BASE_URL}/recipes`);
+    if (!response.ok) {
+      console.warn(`Failed to fetch recipe IDs: ${response.status} ${response.statusText}`);
+      
+      // Return cached IDs as fallback if available
+      if (cachedIds.length > 0) {
+        return cachedIds;
+      }
+      
+      // Otherwise generate some fallback IDs
+      return Array.from({ length: 500 }, (_, i) => 1000 + i);
+    }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching recipe IDs:', error);
+    
+    // Return cached IDs as fallback if available
+    if (cachedIds.length > 0) {
+      return cachedIds;
+    }
+    
+    // Otherwise return fallback IDs
+    return Array.from({ length: 500 }, (_, i) => 1000 + i);
+  }
 }
