@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { fetchItem } from '@/services/gw2api';
 import { Item } from '@/types/gw2api';
 import Image from 'next/image';
@@ -9,7 +9,8 @@ import { useSearchParams } from 'next/navigation';
 import '../globals.css';
 import './compare.css';
 
-export default function ComparePage() {
+// Component that uses useSearchParams
+function CompareContent() {
   const searchParams = useSearchParams();
   const item1Id = searchParams.get('item1');
   const item2Id = searchParams.get('item2');
@@ -257,5 +258,13 @@ export default function ComparePage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ComparePage() {
+  return (
+    <Suspense fallback={<div>Loading compare page...</div>}>
+      <CompareContent />
+    </Suspense>
   );
 } 

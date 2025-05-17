@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { fetchItem, searchRecipesByOutput, fetchRecipe, fetchItems, fetchItemPrice, fetchItemPrices, formatPriceWithIcons } from '@/services/gw2api';
 import { addToFavorites, removeFromFavorites, isFavorite } from '@/services/favoriteService';
 import { Item, Recipe, ItemPrice } from '@/types/gw2api';
@@ -14,11 +14,8 @@ interface RecipeData {
   ingredients: Item[];
 }
 
-export default function ItemDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  // Використовуємо React.use() для отримання params
-  const resolvedParams = React.use(params);
-  const itemId = resolvedParams.id;
-
+// Component that uses useSearchParams
+function ItemDetailContent({ itemId }: { itemId: string }) {
   const [item, setItem] = useState<Item | null>(null);
   const [recipes, setRecipes] = useState<RecipeData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -518,5 +515,16 @@ export default function ItemDetailPage({ params }: { params: Promise<{ id: strin
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ItemDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(params);
+  const itemId = resolvedParams.id;
+
+  return (
+    <Suspense fallback={<div>Loading item details...</div>}>
+      <ItemDetailContent itemId={itemId} />
+    </Suspense>
   );
 } 
