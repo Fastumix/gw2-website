@@ -1,0 +1,604 @@
+.item-detail-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #1a1a1a;
+  color: #eee;
+}
+
+.item-detail-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.back-button {
+  padding: 8px 16px;
+  background-color: #ff7700;
+  color: #000;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-right: 20px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: #ff9900;
+}
+
+.item-detail-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.detail-favorite-button {
+  padding: 8px 16px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.detail-favorite-button:hover {
+  background-color: #444;
+}
+
+.detail-favorite-button.favorite-active {
+  background-color: #f8c51c;
+  color: #000;
+}
+
+.compare-select-button {
+  padding: 8px 16px;
+  background-color: #2c7be5;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.compare-select-button:hover {
+  background-color: #1b68d2;
+}
+
+.item-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.item-detail-main {
+  display: flex;
+  gap: 30px;
+  padding: 20px;
+  background-color: #222;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.item-detail-image-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.item-detail-image {
+  border-radius: 8px;
+  border: 2px solid #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.item-detail-rarity {
+  padding: 4px 12px;
+  border-radius: 4px;
+  color: #000;
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.item-detail-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #ff9900;
+  margin-right: 6px;
+}
+
+.item-detail-category,
+.item-detail-level,
+.item-detail-value {
+  font-size: 16px;
+}
+
+.item-detail-description {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #333;
+}
+
+.item-detail-description h3 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #ff9900;
+  margin-bottom: 8px;
+}
+
+.item-detail-flags {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #333;
+}
+
+.item-detail-flags h3 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #ff9900;
+  margin-bottom: 8px;
+}
+
+.item-detail-flags ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.item-detail-flags li {
+  background-color: #333;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.item-detail-section {
+  padding: 20px;
+  background-color: #222;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.section-title {
+  font-size: 24px;
+  color: #ff9900;
+  margin-top: 0;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #333;
+}
+
+.recipe-container {
+  margin-bottom: 20px;
+}
+
+.recipe-container h3 {
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #eee;
+}
+
+.recipe-details {
+  margin-bottom: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ingredients-list {
+  margin-top: 16px;
+}
+
+.ingredients-list h4 {
+  font-size: 18px;
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #eee;
+}
+
+.ingredients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.ingredient-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #333;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.ingredient-item:hover {
+  background-color: #444;
+}
+
+.ingredient-image {
+  border-radius: 4px;
+  margin-right: 12px;
+}
+
+.ingredient-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.ingredient-name {
+  font-weight: 600;
+}
+
+.ingredient-count {
+  font-size: 14px;
+  color: #999;
+}
+
+.craft-profit {
+  color: #5fd35f;
+  margin-left: 8px;
+}
+
+.similar-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.similar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  background-color: #333;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  text-align: center;
+}
+
+.similar-item:hover {
+  background-color: #444;
+}
+
+.similar-item-image {
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.similar-item-name {
+  font-weight: 600;
+}
+
+.compare-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ff7700;
+  color: #000;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 600;
+  margin-top: 12px;
+  transition: background-color 0.2s;
+}
+
+.compare-button:hover {
+  background-color: #ff9900;
+}
+
+.detail-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+}
+
+.detail-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #333;
+  border-top-color: #ff7700;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.detail-error {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #222;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.detail-error h2 {
+  font-size: 24px;
+  color: #ff5555;
+  margin-top: 0;
+}
+
+.back-link {
+  display: inline-block;
+  padding: 8px 16px;
+  margin-top: 20px;
+  background-color: #ff7700;
+  color: #000;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.back-link:hover {
+  background-color: #ff9900;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Стилі для різних рідкостей */
+.rarity-junk {
+  border-color: #aaa;
+}
+
+.rarity-basic {
+  border-color: #fff;
+}
+
+.rarity-fine {
+  border-color: #62a4da;
+}
+
+.rarity-masterwork {
+  border-color: #1a9306;
+}
+
+.rarity-rare {
+  border-color: #fcd00b;
+}
+
+.rarity-exotic {
+  border-color: #ffa405;
+}
+
+.rarity-ascended {
+  border-color: #fb3e8d;
+}
+
+.rarity-legendary {
+  border-color: #4c139d;
+}
+
+/* Текстові кольори для рідкостей */
+.text-junk {
+  color: #aaa;
+}
+
+.text-basic {
+  color: #fff;
+}
+
+.text-fine {
+  color: #62a4da;
+}
+
+.text-masterwork {
+  color: #1a9306;
+}
+
+.text-rare {
+  color: #fcd00b;
+}
+
+.text-exotic {
+  color: #ffa405;
+}
+
+.text-ascended {
+  color: #fb3e8d;
+}
+
+.text-legendary {
+  color: #4c139d;
+}
+
+/* Фонові кольори для рідкостей */
+.bg-junk {
+  background-color: #555;
+}
+
+.bg-basic {
+  background-color: #777;
+}
+
+.bg-fine {
+  background-color: #2970aa;
+}
+
+.bg-masterwork {
+  background-color: #107105;
+}
+
+.bg-rare {
+  background-color: #ad920a;
+}
+
+.bg-exotic {
+  background-color: #c27b05;
+}
+
+.bg-ascended {
+  background-color: #b11f63;
+}
+
+.bg-legendary {
+  background-color: #351178;
+}
+
+/* Медіа запити для респонсивності */
+@media (max-width: 768px) {
+  .item-detail-main {
+    flex-direction: column;
+  }
+  
+  .item-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .back-button {
+    margin-right: 0;
+  }
+  
+  .detail-favorite-button {
+    align-self: stretch;
+  }
+}
+
+/* Додаємо стилі для відображення цін з торгового поста */
+
+.item-detail-tp {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.item-detail-tp h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.item-detail-prices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item-detail-price {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #333;
+}
+
+.item-detail-price.buy {
+  border-left: 4px solid #2e86c1;
+}
+
+.item-detail-price.sell {
+  border-left: 4px solid #c0392b;
+}
+
+.buy-price {
+  color: #2e86c1;
+  font-weight: 600;
+}
+
+.sell-price {
+  color: #c0392b;
+  font-weight: 600;
+}
+
+.price-value {
+  font-weight: 600;
+  font-size: 1.1em;
+}
+
+.price-quantity {
+  font-size: 0.9em;
+  color: #777;
+  margin-left: auto;
+}
+
+.item-detail-price-diff {
+  margin-top: 5px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 4px solid #27ae60;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.item-detail-tp-loading, .item-detail-no-tp {
+  margin-top: 10px;
+  color: #777;
+  font-style: italic;
+}
+
+/* Додаємо стилі для детального відображення інгредієнтів */
+
+.ingredient-detail-item {
+  background-color: #333;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.ingredient-item-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  background-color: #444;
+}
+
+.ingredient-item-header:hover {
+  background-color: #555;
+}
+
+.ingredient-extra-info {
+  padding: 10px;
+  font-size: 0.9em;
+  background-color: #2a2a2a;
+  border-top: 1px solid #444;
+}
+
+.ingredient-source, .ingredient-tp-price {
+  margin-bottom: 6px;
+}
+
+.info-label-sm {
+  font-weight: 600;
+  color: #ff9900;
+  margin-right: 6px;
+  font-size: 0.9em;
+}
+
+.ingredient-total-price {
+  display: inline-block;
+  margin-left: 8px;
+  color: #aaa;
+} 

@@ -1,13 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 10, 10, 10;
+  --background-end-rgb: 5, 5, 5;
+  --orange-primary: #ff7700;
+  --orange-secondary: #ff9900;
+  --orange-light: #ffaa33;
+  --orange-dark: #cc5500;
+  --gray-dark: #1a1a1a;
+  --gray-darker: #111111;
+  --gray-border: #333333;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  min-height: 100vh;
 }
 
 html,
@@ -16,18 +31,20 @@ body {
   overflow-x: hidden;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+}
+
+footer {
+  position: fixed;
+  background-color: var(--gray-dark);
+  color: var(--orange-primary);
+  padding: 20px 0;
+  text-align: center;
+  bottom: 0;
+  width: 100%;
 }
 
 a {
@@ -39,4 +56,51 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+/* App Container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+/* Оранжеві кнопки */
+.btn-orange {
+  background-color: var(--orange-primary);
+  color: #000;
+  transition: all 0.3s ease;
+}
+
+.btn-orange:hover {
+  background-color: var(--orange-secondary);
+}
+
+/* Стилі контейнерів */
+.card {
+  border: 1px solid var(--gray-border);
+  background-color: var(--gray-dark);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  border-color: var(--orange-primary);
+  box-shadow: 0 0 10px rgba(255, 119, 0, 0.3);
+}
+
+/* Специфічні стилі тексту */
+.text-orange {
+  color: var(--orange-primary);
+}
+
+.text-orange-light {
+  color: var(--orange-light);
+}
+
+.border-orange {
+  border-color: var(--orange-primary);
 }
