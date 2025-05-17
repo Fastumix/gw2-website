@@ -459,24 +459,102 @@
   background-color: #351178;
 }
 
-/* Медіа запити для респонсивності */
+/* Удосконалені адаптивні стилі для сторінки деталей предмета */
 @media (max-width: 768px) {
+  .item-detail-container {
+    padding: 10px;
+  }
+  
   .item-detail-main {
     flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
   }
   
   .item-detail-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 15px;
+    gap: 10px;
+  }
+  
+  .item-detail-title {
+    font-size: 24px;
+    margin-bottom: 10px;
   }
   
   .back-button {
     margin-right: 0;
+    margin-bottom: 10px;
   }
   
-  .detail-favorite-button {
-    align-self: stretch;
+  .detail-favorite-button,
+  .compare-select-button {
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .recipe-details {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .ingredients-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .similar-items-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .compare-button {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .item-detail-prices {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .item-detail-price {
+    width: 100%;
+  }
+}
+
+/* Додаткові покращення для маленьких екранів */
+@media (max-width: 480px) {
+  .item-detail-container {
+    padding: 5px;
+  }
+  
+  .item-detail-main {
+    padding: 15px;
+  }
+  
+  .item-detail-flags ul {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .item-detail-flags li {
+    width: 100%;
+  }
+  
+  .similar-items-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .section-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .recipe-container h3 {
+    font-size: 18px;
   }
 }
 

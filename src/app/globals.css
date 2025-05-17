@@ -67,6 +67,7 @@ a {
 
 main {
   flex: 1;
+  margin-bottom: 70px; /* відступ для футера */
 }
 
 /* Оранжеві кнопки */
@@ -103,4 +104,58 @@ main {
 
 .border-orange {
   border-color: var(--orange-primary);
+}
+
+/* Покращені глобальні адаптивні стилі */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  footer {
+    padding: 15px 0;
+    font-size: 12px;
+  }
+  
+  main {
+    margin-bottom: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+  
+  footer {
+    padding: 10px 0;
+    font-size: 11px;
+  }
+  
+  main {
+    margin-bottom: 50px;
+  }
+  
+  .btn-orange {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    display: block;
+    margin-bottom: 10px;
+  }
+}
+
+/* Dark Mode Optimization */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb))
+    );
+  }
+  
+  img {
+    opacity: 0.9;
+  }
 }

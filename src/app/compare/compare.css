@@ -382,6 +382,11 @@
 
 /* Media queries for responsiveness */
 @media (max-width: 768px) {
+  .compare-container {
+    margin: 5% auto;
+    padding: 15px;
+  }
+  
   .compare-header,
   .comparison-header {
     flex-direction: column;
@@ -416,5 +421,82 @@
   .compare-back-button {
     width: 100%;
     text-align: center;
+  }
+  
+  .compare-flags-list {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .compare-flag {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* Додаткові покращення для маленьких екранів */
+@media (max-width: 480px) {
+  .compare-container {
+    margin: 0 auto;
+    padding: 10px;
+  }
+  
+  .compare-title {
+    font-size: 22px;
+  }
+  
+  .comparison-table-container {
+    padding: 10px;
+  }
+  
+  .comparison-table {
+    display: block;
+  }
+  
+  .comparison-table tr {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+  }
+  
+  .comparison-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #222;
+    padding: 8px 0;
+  }
+  
+  .comparison-table td:first-child {
+    width: 100%;
+    border-bottom: 1px solid #333;
+    margin-bottom: 5px;
+    font-size: 16px;
+  }
+  
+  .comparison-table tr.spacer {
+    display: none;
+  }
+  
+  .comparison-table tr.section-header {
+    background-color: #333;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .comparison-table tr.section-header td {
+    justify-content: center;
+    padding: 5px 0;
+  }
+  
+  .compare-item-icon {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .item-name {
+    font-size: 16px;
   }
 } 
