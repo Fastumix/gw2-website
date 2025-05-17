@@ -14,9 +14,9 @@ interface RecipeData {
   ingredients: Item[];
 }
 
-export default function ItemDetailPage({ params }: { params: { id: string } }) {
+export default function ItemDetailPage({ params }: { params: Promise<{ id: string }> }) {
   // Використовуємо React.use() для отримання params
-  const resolvedParams = React.use(params as any) as { id: string };
+  const resolvedParams = React.use(params);
   const itemId = resolvedParams.id;
 
   const [item, setItem] = useState<Item | null>(null);
